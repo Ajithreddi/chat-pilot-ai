@@ -1,49 +1,174 @@
+# import streamlit as st
+# import requests
+# import uuid
+
+# from config import WEBHOOK_URL
+
+
+# st.set_page_config(page_title="AI ChatPilot", page_icon="🤖")
+
+# st.markdown(
+#     """
+#     <h1 style='text-align:center; font-size: 40px;'>ChatPilot AI 🤖</h1>
+#     <p style='text-align:center; font-size: 18px; color: grey;'>
+#         A simple, fast, and smart learning assistant.
+#     </p>
+#     <hr>
+#     """,
+#     unsafe_allow_html=True
+# )
+
+# # Init conversation
+# if "conversation" not in st.session_state:
+#     st.session_state["conversation"] = []
+
+# # Create a unique session ID for each user
+# if "session_id" not in st.session_state:
+#     st.session_state.session_id = str(uuid.uuid4())
+
+# # AI MODES (Sidebar)
+# st.sidebar.header("🤖 AI Mode")
+
+# ai_mode = st.sidebar.selectbox(
+#     "Choose ChatPilot Mood / Tone",
+#     [
+#         "Friendly",
+#         "Strict",
+#         "Funny",
+#         "Teacher",
+#         "Developer",
+#         "Motivational"
+#     ]
+# )
+
+
+# # QUICK ACTIONS
+# st.markdown("### ⚡ Quick Actions")
+
+# col1, col2 = st.columns(2)
+
+# with col1:
+#     summarize_clicked = st.button("📝 Summarize")
+
+# with col2:
+#     simple_clicked = st.button("✨ Explain Simply")
+
+
+# # Chat Input
+# USER_PROMPT = st.chat_input("Enter your message")
+
+# # Quick-action override
+# if summarize_clicked:
+#     USER_PROMPT = "Summarize the above conversation clearly."
+
+# elif simple_clicked:
+#     USER_PROMPT = "Explain the previous message in very simple terms."
+
+# # Continue only if a prompt exists
+# if USER_PROMPT:
+#     st.session_state.conversation.append(
+#         {"role": "user", "data": USER_PROMPT}
+#     )
+
+#     response = requests.post(
+#         WEBHOOK_URL,
+#         json={
+#             "user_prompt": USER_PROMPT,
+#             "ai_mode": ai_mode,
+#             "sessionId": st.session_state.session_id
+#         }
+#     )
+
+#     if response.status_code == 200:
+#         output = response.json()[0]["output"]
+#     else:
+#         output = f"Error {response.status_code}"
+
+#     st.session_state.conversation.append(
+#         {"role": "ai", "data": output}
+#     )
+
+# # Display messages
+# for con in st.session_state["conversation"]:
+#     with st.chat_message(con["role"]):
+#         st.write(con["data"])
+
+
 import streamlit as st
 import requests
 import uuid
-
 from config import WEBHOOK_URL
 
+st.set_page_config(page_title="AI ChatPilot", page_icon="🤖")
 
-st.set_page_config(page_title="AI Chat", page_icon="🤖")
+# Header
+st.markdown("""
+<h1 style='text-align:center; font-size:40px;'>ChatPilot AI 🤖</h1>
+<p style='text-align:center; font-size:18px; color:grey;'>
+A simple, fast, and smart learning assistant.
+</p>
+<hr>
+""", unsafe_allow_html=True)
 
-# Init conversation
+# Session state
 if "conversation" not in st.session_state:
-    st.session_state["conversation"] = []
-
-# Create a unique session ID for each user
+    st.session_state.conversation = []
 if "session_id" not in st.session_state:
     st.session_state.session_id = str(uuid.uuid4())
 
 
+# AI modes (Sidebar)
+
+st.sidebar.header("🤖 AI Mode")
+
+ai_mode = st.sidebar.selectbox(
+    "Choose a ChatPilot Mode",
+    [
+        "ChatPilot Tutor 📚",
+        "Creative Lab ✨",
+        "Play Zone 🎮",
+        "Chill Buddy 😄"
+    ]
+)
+
+
+# Quick Actions (Sidebar)
+st.sidebar.markdown("### ⚡ Quick Actions")
+summarize_clicked = st.sidebar.button("📝 Summarize")
+simple_clicked = st.sidebar.button("✨ Explain Simply")
+
+# Chat Input
 USER_PROMPT = st.chat_input("Enter your message")
 
-if USER_PROMPT:
-    # Add user msg
-    st.session_state.conversation.append(
-        {"role": "user", "data": USER_PROMPT}
-    )
+if summarize_clicked:
+    USER_PROMPT = "Summarize the above conversation clearly."
+elif simple_clicked:
+    USER_PROMPT = "Explain the previous message in very simple terms."
 
-    # Call n8n
+
+# Process message
+if USER_PROMPT:
+    st.session_state.conversation.append({"role": "user", "data": USER_PROMPT})
+
     response = requests.post(
         WEBHOOK_URL,
-        json={ 
-            "user_prompt": USER_PROMPT, 
+        json={
+            "user_prompt": USER_PROMPT,
+            "ai_mode": ai_mode,
             "sessionId": st.session_state.session_id
         }
     )
-    
-    if response.status_code == 200:
-        ai_output = response.json()[0]["output"]
-        st.session_state["conversation"].append(
-            {"role": "ai", "data": ai_output}
-        )
-    else:
-        st.session_state["conversation"].append(
-            {"role": "ai", "data": f"Error {response.status_code}"}
-        )
 
-# Display messages
-for con in st.session_state["conversation"]:
+    if response.status_code == 200:
+        ai_reply = response.json()[0]["output"]
+    else:
+        ai_reply = f"Error {response.status_code}"
+
+    st.session_state.conversation.append({"role": "ai", "data": ai_reply})
+
+
+# Display chat
+for con in st.session_state.conversation:
     with st.chat_message(con["role"]):
         st.write(con["data"])
+
