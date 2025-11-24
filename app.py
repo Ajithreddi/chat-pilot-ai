@@ -15,19 +15,22 @@ if "conversation" not in st.session_state:
 if "session_id" not in st.session_state:
     st.session_state.session_id = str(uuid.uuid4())
 
-prompt = st.chat_input("Enter your message")
 
-if prompt:
+USER_PROMPT = st.chat_input("Enter your message")
+
+if USER_PROMPT:
     # Add user msg
     st.session_state.conversation.append(
-        {"role": "user", "data": prompt}
+        {"role": "user", "data": USER_PROMPT}
     )
 
     # Call n8n
     response = requests.post(
         WEBHOOK_URL,
-        json={"prompt": prompt, "sessionId": st.session_state.session_id}
-
+        json={ 
+            "user_prompt": USER_PROMPT, 
+            "sessionId": st.session_state.session_id
+        }
     )
     
     if response.status_code == 200:
