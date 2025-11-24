@@ -1,12 +1,19 @@
 import streamlit as st
 import requests
-from config import WEBHOOK_URL, SESSION_ID
+import uuid
+
+from config import WEBHOOK_URL
+
 
 st.set_page_config(page_title="AI Chat", page_icon="🤖")
 
 # Init conversation
 if "conversation" not in st.session_state:
     st.session_state["conversation"] = []
+
+# Create a unique session ID for each user
+if "session_id" not in st.session_state:
+    st.session_state.session_id = str(uuid.uuid4())
 
 prompt = st.chat_input("Enter your message")
 
@@ -19,7 +26,8 @@ if prompt:
     # Call n8n
     response = requests.post(
         WEBHOOK_URL,
-        json={"prompt": prompt, "sessionId": SESSION_ID}
+        json={"prompt": prompt, "sessionId": st.session_state.session_id}
+
     )
     
     if response.status_code == 200:
