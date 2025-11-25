@@ -1,7 +1,14 @@
+import os
+import sys
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
+
 import streamlit as st
 import requests
 import uuid
-from config import WEBHOOK_URL
+from config.settings import ENV, WEBHOOK_URL
+
 
 st.set_page_config(page_title="ChatPilot AI Killer", page_icon="🤖")
 
