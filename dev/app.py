@@ -10,7 +10,7 @@ sys.path.append(BASE_DIR)
 
 from config.settings import ENV, WEBHOOK_URL
 
-st.set_page_config(page_title="ChatPilot AI", page_icon="🤖")
+st.set_page_config(page_title="ChatPilot AI 999", page_icon="🤖")
 
 # Header
 st.markdown("""
