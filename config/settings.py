@@ -8,5 +8,5 @@ if not IS_CLOUD:
     ENV_PATH = os.path.join(BASE_DIR, "env", ".env")
     load_dotenv(ENV_PATH)
 
-ENV = os.getenv("ENV", "DEV")
+ENV = os.getenv("ENV", "PROD")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
