@@ -1,10 +1,36 @@
 import os
+from dotenv import load_dotenv
 
+# Detect if running on Streamlit Cloud
+IS_CLOUD = os.getenv("STREAMLIT_RUNTIME", None) is not None
+
+if not IS_CLOUD:
+    # LOCAL PROD: Load .env from /env folder
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    ENV_PATH = os.path.join(BASE_DIR, "env", ".env")
+    load_dotenv(ENV_PATH)
+
+# Shared config (both local & cloud)
 ENV = os.getenv("ENV", "PROD")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 
-print(f"[CONFIG] ENV = {ENV}")
-print(f"[CONFIG] WEBHOOK_URL = {WEBHOOK_URL}")
+print("\n[CONFIG] ---------")
+print(f"Running on Cloud? {IS_CLOUD}")
+if not IS_CLOUD:
+    print(f"Loaded local .env: {ENV_PATH}")
+print(f"ENV = {ENV}")
+print(f"WEBHOOK_URL = {WEBHOOK_URL}")
+print("[CONFIG] ---------\n")
+
+
+
+# import os
+
+# ENV = os.getenv("ENV", "PROD")
+# WEBHOOK_URL = os.getenv("WEBHOOK_URL")
+
+# print(f"[CONFIG] ENV = {ENV}")
+# print(f"[CONFIG] WEBHOOK_URL = {WEBHOOK_URL}")
 
 
 # import os
