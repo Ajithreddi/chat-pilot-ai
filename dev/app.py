@@ -3,7 +3,7 @@ import requests
 import uuid
 from config import WEBHOOK_URL
 
-st.set_page_config(page_title="ChatPilot AI Killer", page_icon="🤖")
+st.set_page_config(page_title="ChatPilot AI", page_icon="🤖")
 
 # Header
 st.markdown("""
