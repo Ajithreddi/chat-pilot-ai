@@ -1,5 +1,5 @@
-env/.env
-env/.env.development
-env/.env.production
+# env/.env
+# env/.env.development
+# env/.env.production
 __pycache__/
 *.pyc
